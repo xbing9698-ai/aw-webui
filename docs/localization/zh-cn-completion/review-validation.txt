@@ -1,0 +1,163 @@
+本轮独立验收修复验证记录；构建输出目录、日志位于执行环境 /tmp，以下归档日志/摘录供远程审查。
+
+=== aw-review-tests.log ===
+SHA256 7785be8757c3327cc9357757da885badcd19f76722aedee8caedb83f49bb40e8
+
+> aw-webui@1.0.0 test
+> jest --runInBand --coverage=false --runTestsByPath test/unit/compactRelativeTime.test.ts test/unit/time.test.ts test/unit/ChineseLocalization.test.ts test/unit/datasets.test.node.ts
+
+`isModuleDeclaration` has been deprecated, please migrate to `isImportOrExportDeclaration`
+    at isModuleDeclaration (/workspace/aw-webui/node_modules/@babel/types/lib/validators/generated/index.js:2793:35)
+    at PluginPass.Program (/workspace/aw-webui/node_modules/babel-plugin-lodash/lib/index.js:102:44)
+PASS jsdom test/unit/ChineseLocalization.test.ts (10.035 s)
+  ● Console
+
+    console.error
+      [vue-test-utils]: overwriting methods via the `methods` property is deprecated and will be removed in the next major version. There is no clear migration path for the `methods` property - Vue does not support arbitrarily replacement of methods, nor should VTU. To stub a complex method extract it from the component and test it in isolation. Otherwise, the suggestion is to rethink those tests.
+
+      74 |
+      75 | test('third-party modal and datetime buttons receive reactive translations', async () => {
+    > 76 |   const modal = shallowMount(CategoryEditModal, {
+         |                             ^
+      77 |     localVue,
+      78 |     i18n,
+      79 |     propsData: { categoryId: 0 },
+
+      at warn (node_modules/@vue/test-utils/dist/vue-test-utils.js:1704:11)
+      at warnDeprecated (node_modules/@vue/test-utils/dist/vue-test-utils.js:1802:5)
+      at mergeOptions (node_modules/@vue/test-utils/dist/vue-test-utils.js:3051:5)
+      at mount (node_modules/@vue/test-utils/dist/vue-test-utils.js:14057:23)
+      at shallowMount (node_modules/@vue/test-utils/dist/vue-test-utils.js:14093:10)
+      at Object.<anonymous> (test/unit/ChineseLocalization.test.ts:76:29)
+
+PASS node test/unit/datasets.test.node.ts
+PASS jsdom test/unit/time.test.ts
+PASS jsdom test/unit/compactRelativeTime.test.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       43 passed, 43 total
+Snapshots:   0 total
+Time:        15.257 s
+Ran all test suites within paths "test/unit/compactRelativeTime.test.ts", "test/unit/time.test.ts", "test/unit/ChineseLocalization.test.ts", "test/unit/datasets.test.node.ts" in 2 projects.
+
+=== aw-review-locales.log ===
+SHA256 119cd9d4822adc9ce82ec8cd975a691f3ee16d3946449b25804bbf4ae7d9e9d5
+
+Translation coverage (missing or identical to en counts as untranslated):
+  ar      814/916   88.9%
+  bn      814/916   88.9%
+  de      814/916   88.9%
+  es      814/916   88.9%
+  fr      814/916   88.9%
+  hi      814/916   88.9%
+  id      814/916   88.9%
+  ja      814/916   88.9%
+  pt-BR   814/916   88.9%
+  ru      814/916   88.9%
+  sv      814/916   88.9%
+  sw      814/916   88.9%
+  uk      814/916   88.9%
+  ur      814/916   88.9%
+  zh-CN   916/916  100.0%
+Locale check passed (keys + placeholders).
+
+
+=== aw-review-lint.log ===
+SHA256 82d2e7e6220c5a118390639d3299705f39ee591f234c931368698257786d02da
+
+> aw-webui@1.0.0 lint
+> vue-cli-service lint --no-fix
+
+Commit hash: 5a7706a
+
+/workspace/aw-webui/vue.config.js
+  8:7  warning  '__filename' is already a global variable  no-shadow
+  9:7  warning  '__dirname' is already a global variable   no-shadow
+
+✖ 2 problems (0 errors, 2 warnings)
+
+
+=== aw-review-changed-lint.log ===
+SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+[退出码 0，无输出]
+
+=== aw-review-browser.log ===
+SHA256 09aa6ae16d51b179db430c0521b2a9273abcb1d7f31353dcdc73e99f859fff5f
+{
+  "layout": {
+    "width": 390,
+    "scrollWidth": 390
+  },
+  "measurements": [
+    {
+      "mobileLabel": "0秒",
+      "nameWidth": 264.625
+    },
+    {
+      "mobileLabel": "59秒",
+      "nameWidth": 256.859375
+    },
+    {
+      "mobileLabel": "59分钟",
+      "nameWidth": 242.859375
+    },
+    {
+      "mobileLabel": "23小时",
+      "nameWidth": 242.859375
+    },
+    {
+      "mobileLabel": "29天",
+      "nameWidth": 256.859375
+    },
+    {
+      "mobileLabel": "11个月",
+      "nameWidth": 242.859375
+    },
+    {
+      "mobileLabel": "10年",
+      "nameWidth": 256.859375
+    },
+    {
+      "mobileLabel": "+1小时",
+      "nameWidth": 242.859375
+    }
+  ],
+  "errors": []
+}
+PASS: 390px labels, no overflow/overlap, full timestamp attributes, English switch, Chinese desktop label, no activity API access or page errors
+
+=== aw-review-typecheck.log ===
+SHA256 cad9e0b0fdb65c62833e3630c6a3c49544cc76f44c57f6fd51f377fff95a5983
+
+> aw-webui@1.0.0 typecheck:test
+> tsc --noEmit -p tsconfig.test.json
+
+test/unit/transforms.test.node.ts(8,41): error TS2339: Property 'id' does not exist on type 'object'.
+test/unit/transforms.test.node.ts(8,53): error TS2339: Property 'id' does not exist on type 'object'.
+
+=== aw-review-build.log ===
+SHA256 b50dab2764958d2b03d56bc2fcea8b6d594aa4dfd5b9a380e43dfb9189f7475b
+[构建尾部摘录；完整日志 SHA256 见上。保留现有 Sass/第三方/包体积提示，未修改构建配置。]
+../../tmp/aw-webui-review-vite/assets/Settings-VwvoGpLt.js                       49.30 kB │ gzip:  12.33 kB
+../../tmp/aw-webui-review-vite/assets/ActivityView-DmrilKmi.js                   77.05 kB │ gzip:  26.61 kB
+../../tmp/aw-webui-review-vite/assets/NewReleaseNotification-BVq0hOJ_.js         80.74 kB │ gzip:  29.01 kB
+../../tmp/aw-webui-review-vite/assets/fp-DOPQOzLu.js                             82.87 kB │ gzip:  30.22 kB
+../../tmp/aw-webui-review-vite/assets/CategoryEditModal-D3Z3KV-w.js             110.66 kB │ gzip:  30.22 kB
+../../tmp/aw-webui-review-vite/assets/SunburstCategories-B49-RyWc.js            161.56 kB │ gzip:  53.92 kB
+../../tmp/aw-webui-review-vite/assets/TimelineBarChart-Bzm82UrX.js              204.87 kB │ gzip:  70.22 kB
+../../tmp/aw-webui-review-vite/assets/Calendar-BpqasyOP.js                      242.25 kB │ gzip:  70.58 kB
+../../tmp/aw-webui-review-vite/assets/VisTimeline-DnBdqdu5.js                   518.66 kB │ gzip: 157.51 kB
+../../tmp/aw-webui-review-vite/assets/index-DdgB0NF1.js                       2,026.35 kB │ gzip: 631.42 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 30.35s
+
+PWA v1.2.0
+mode      generateSW
+precache  132 entries (4281.80 KiB)
+files generated
+  ../../tmp/aw-webui-review-vite/sw.js
+  ../../tmp/aw-webui-review-vite/workbox-1ef09536.js

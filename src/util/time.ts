@@ -67,6 +67,16 @@ export function compact_relative_time(
   if (unitOnly && locale.split('-')[0] === 'en') {
     return `${value > 0 ? '+' : ''}${Math.abs(value)}${label}`;
   }
+  if (unitOnly && locale === 'zh-CN') {
+    // Omit relative direction words on narrow bucket rows, retaining future +.
+    return new Intl.NumberFormat(locale, {
+      style: 'unit',
+      unit,
+      unitDisplay: 'narrow',
+      useGrouping: false,
+      signDisplay: value > 0 ? 'always' : 'never',
+    }).format(Math.abs(value));
+  }
   if (locale.split('-')[0] === 'en') {
     const age = `${Math.abs(value)}${label}`;
     return value > 0 ? `in ${age}` : `${age} ago`;
