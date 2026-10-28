@@ -1,0 +1,103 @@
+ActivityWatch 简体中文本地化：第二阶段既有测试记录摘录
+
+基线：0b73e83452390bfe60bdbdbd70a888ef255024d5
+以下摘录来自第二阶段已保存的日志，保存成果阶段未重跑测试。
+浏览器数据均为虚构测试数据；截图中的 v0.14.1 为模拟服务器元数据。
+测试类型检查的两处基线错误仍保留，没有放宽检查。
+
+=== unit-tests.log ===
+原始日志 SHA-256: c61df10ef815abb1e58ffe9669ddc8071bdff38facc205c1d0ce48ddf3b178c3
+PASS node test/unit/browserAllowlist.test.node.ts
+PASS node test/unit/jestConfig.test.node.ts
+
+Test Suites: 1 skipped, 103 passed, 103 of 104 total
+Tests:       30 skipped, 1338 passed, 1368 total
+Snapshots:   4 passed, 4 total
+Time:        107.962 s
+Ran all test suites in 2 projects.
+
+=== browser.log ===
+原始日志 SHA-256: cf7fd3f6ce24b563e2e6fb630d6e303b5874fe8e63fdeea3a45fe96ce3b1b86b
+PASS default views and custom name
+PASS ranking, category display and user data
+PASS expand more
+PASS view window
+PASS view browser
+PASS view editor
+PASS exact interval Chinese
+PASS classification modal buttons
+PASS time range navigation
+PASS timeline tooltip in Chinese
+PASS notification validation message
+PASS query modal and empty-name error
+PASS live English/Chinese switch
+PASS stored user views unchanged
+PASS narrow summary layout
+PASS narrow settings layout
+
+=== typecheck.log ===
+原始日志 SHA-256: cad9e0b0fdb65c62833e3630c6a3c49544cc76f44c57f6fd51f377fff95a5983
+
+> aw-webui@1.0.0 typecheck:test
+> tsc --noEmit -p tsconfig.test.json
+
+test/unit/transforms.test.node.ts(8,41): error TS2339: Property 'id' does not exist on type 'object'.
+test/unit/transforms.test.node.ts(8,53): error TS2339: Property 'id' does not exist on type 'object'.
+
+=== baseline-typecheck.log ===
+原始日志 SHA-256: d9d75720e57a70d6c05cbab0bf5f92bb2add71ef96c7f51ee4fd340e0700602b
+../../tmp/aw-webui-baseline-typecheck/test/unit/transforms.test.node.ts(8,41): error TS2339: Property 'id' does not exist on type 'object'.
+../../tmp/aw-webui-baseline-typecheck/test/unit/transforms.test.node.ts(8,53): error TS2339: Property 'id' does not exist on type 'object'.
+
+=== locales.log ===
+原始日志 SHA-256: 558cec372ad47c78c81fd266ecf2fc3f472a2bb84dd471bb18052f741437c9e1
+  - uncategorized.periodExactInterval: "in the selected time interval..."
+
+Checked ar, bn, de, en, es, fr, hi, id, ja, pt-BR, ru, sv, sw, uk, ur, zh-CN — 916 keys in en.
+
+Translation coverage (missing or identical to en counts as untranslated):
+  ar      814/916   88.9%
+  bn      814/916   88.9%
+  de      814/916   88.9%
+  es      814/916   88.9%
+  fr      814/916   88.9%
+  hi      814/916   88.9%
+  id      814/916   88.9%
+  ja      814/916   88.9%
+  pt-BR   814/916   88.9%
+  ru      814/916   88.9%
+  sv      814/916   88.9%
+  sw      814/916   88.9%
+  uk      814/916   88.9%
+  ur      814/916   88.9%
+  zh-CN   916/916  100.0%
+Locale check passed (keys + placeholders).
+
+
+=== webpack-build.log ===
+原始日志 SHA-256: a9bd0147e5be4af25a0bb2516260e14eb0847f0004fa84402636c69016ef318c
+  ../../tmp/aw-webui-localized-dist/css/    0.04 KiB         0.06 KiB
+  2559.6a140e79.css
+
+  Images and other types of assets omitted.
+  Build at: 2026-10-28T22:11:59.452Z - Hash: 6b86ce26601f30bb - Time: 109715ms
+
+ DONE  Build complete. The ../../tmp/aw-webui-localized-dist directory is ready to be deployed.
+ INFO  Check out deployment instructions at https://cli.vuejs.org/guide/deployment.html
+
+
+=== vite-build.log ===
+原始日志 SHA-256: eb9c5fdfa94c15694830cc8a9af1ff469c5e2b518ae9826433a895e2655d5f30
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 54.53s
+
+PWA v1.2.0
+mode      generateSW
+precache  132 entries (4281.63 KiB)
+files generated
+  ../../tmp/aw-webui-localized-vite/sw.js
+  ../../tmp/aw-webui-localized-vite/workbox-1ef09536.js
+
+=== Lint ===
+命令：node node_modules/eslint/bin/eslint.js --ext .js,.ts,.vue src test
+第二阶段记录：退出状态 0，零错误、零警告；保存的 lint.log 为空。
