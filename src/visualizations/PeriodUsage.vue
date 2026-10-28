@@ -28,6 +28,9 @@ export default {
     },
   },
   watch: {
+    '$i18n.locale'() {
+      periodusage.update(this.$el, this.periodusage_arr, this.onPeriodClicked, this.chartLabels());
+    },
     periodusage_arr: function () {
       periodusage.update(this.$el, this.periodusage_arr, this.onPeriodClicked, this.chartLabels());
     },

@@ -65,6 +65,12 @@ export default Vue.extend({
     },
   },
   watch: {
+    mode: {
+      immediate: true,
+      handler(value) {
+        this.$emit('display-search-label', value === 'custom');
+      },
+    },
     filterCategories() {
       this.filterCategoriesData = [...this.filterCategoriesData, ...this.filterCategories];
     },

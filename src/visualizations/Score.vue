@@ -20,7 +20,7 @@ div
     div.mt-2(v-for="cat in top_productive" :key="cat.data.$category.join('>')")
       div.d-flex.align-items-center
         div
-          div {{cat.data.$category.slice(-1)[0]}}
+          div {{ categoryName(cat.data.$category) }}
           div.small.text-muted(v-if="cat.data.$category.length > 1")
             | {{cat.data.$category.slice(0, -1).join(" > ")}}
         div.ml-auto.text-success.h5.mb-0
@@ -33,7 +33,7 @@ div
     div.mt-2(v-for="cat in top_distracting" :key="cat.data.$category.join('>')")
       div.d-flex.align-items-center
         div
-          div {{cat.data.$category.slice(-1)[0]}}
+          div {{ categoryName(cat.data.$category) }}
           div.small.text-muted(v-if="cat.data.$category.length > 1")
             | {{cat.data.$category.slice(0, -1).join(" > ")}}
         div.ml-auto.text-danger.h5.mb-0
@@ -70,6 +70,7 @@ div
 </style>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import _ from 'lodash';
 import 'vue-awesome/icons/question-circle';
 import { useActivityStore } from '~/stores/activity';
@@ -93,8 +94,9 @@ export default {
       return _.sum(_.map(this.categories_with_score, cat => cat.data.$total_score));
     },
     score_period_label: function (): string {
+      void this.$i18n?.locale;
       const timeperiod = useActivityStore().query_options?.timeperiod;
-      return timeperiod ? periodReadable(timeperiod) : 'selected period';
+      return timeperiod ? periodReadable(timeperiod) : this.$t('localization.charts.period');
     },
     score_productive_percent() {
       // Compute the percentage of time spent on productive activities (score > 0)
@@ -116,6 +118,13 @@ export default {
         _.filter(this.categories_with_score, cat => cat.data.$total_score < -0.1),
         c => c.data.$total_score
       );
+    },
+  },
+  methods: {
+    categoryName(path) {
+      return path.length === 1
+        ? categoryDisplayName(path, this.$t.bind(this))
+        : path[path.length - 1];
     },
   },
 };

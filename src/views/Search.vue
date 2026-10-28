@@ -128,13 +128,21 @@ export default {
         const results = await Promise.all([
           this.$aw.query(timeperiods, windowQueryArray).catch(e => {
             console.error('Window search failed', e);
-            errors.push(`Window search: ${e.response?.data?.message ?? String(e)}`);
+            errors.push(
+              this.$t('localization.search.windowError', {
+                error: e.response?.data?.message ?? String(e),
+              })
+            );
             return null;
           }),
           browserQueryArray.length > 0
             ? this.$aw.query(timeperiods, browserQueryArray).catch(e => {
                 console.error('Browser search failed', e);
-                errors.push(`Browser search: ${e.response?.data?.message ?? String(e)}`);
+                errors.push(
+                  this.$t('localization.search.browserError', {
+                    error: e.response?.data?.message ?? String(e),
+                  })
+                );
                 return null;
               })
             : Promise.resolve(null),

@@ -14,7 +14,7 @@ sunburst.sunburst-categories(:data="data", :colorScale="colorfunc", :getCategory
     div.info
       div(v-if="nodes.mouseOver !== null && nodes.mouseOver")
         div.parent {{ nodes.mouseOver.data.parent ? nodes.mouseOver.data.parent.join(" > ") : " " }}
-        div.name {{ nodes.mouseOver.data.name }}
+        div.name {{ displayLabel(nodes.mouseOver) }}
         div {{ nodes.mouseOver.value | friendlyduration }}
         div ({{ Math.round(100 * nodes.mouseOver.value / nodes.root.value) }}%)
 
@@ -23,6 +23,7 @@ sunburst.sunburst-categories(:data="data", :colorScale="colorfunc", :getCategory
 </template>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import {
   breadcrumbTrail,
   highlightOnHover,
@@ -79,12 +80,17 @@ export default {
     },
   },
   methods: {
+    displayLabel(node) {
+      if (node.depth === 0 && node.data.name === 'All') return this.$t('common.all');
+      const path = (node.data.parent || []).concat(node.data.name);
+      return path.length === 1 ? categoryDisplayName(path, this.$t.bind(this)) : node.data.name;
+    },
     // Called by vue-d3-sunburst for each arc with the node and its zoom context.
     // Truncates the name to the radial space where it stays visible: the ring
     // itself when child arcs are drawn over the next ring, otherwise the ring
     // plus the library's maxLabelText overflow (minus its 5px text offset).
     labelFor: function (node) {
-      const name = node.data.name;
+      const name = this.displayLabel(node);
       const chart = this.$refs.sunburst;
       if (!chart || !chart.scaleY) return name;
       const { scaleY, maxLabelText } = chart;

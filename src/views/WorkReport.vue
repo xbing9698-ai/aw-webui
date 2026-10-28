@@ -56,7 +56,7 @@ div
       |  {{ $t('common.export') }} JSON
 
   div(v-if="loading")
-    b-spinner.mr-2
+    b-spinner.mr-2(:label="$t('common.loading')")
     | {{ $t('workReport.loading') }}
 
   div(v-if="hasData && !loading")

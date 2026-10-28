@@ -12,7 +12,7 @@ div(style="font-size: 0.9em")
       span(v-else, style="opacity: 0.6")
         icon(name="circle", scale="0.4", style="margin-left: 1em; margin-right: 1.22em;")
 
-      span.category-title {{cat.subname}}
+      span.category-title {{ categoryName(cat) }}
 
     // time
     span.category-value
@@ -57,6 +57,7 @@ div(style="font-size: 0.9em")
 </style>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import 'vue-awesome/icons/circle';
 import 'vue-awesome/icons/regular/plus-square';
 import 'vue-awesome/icons/regular/minus-square';
@@ -132,6 +133,11 @@ export default {
     },
   },
   methods: {
+    categoryName(cat) {
+      return cat.name.length === 1
+        ? categoryDisplayName(cat.name, this.$t.bind(this))
+        : cat.subname;
+    },
     get_category: function (cat_arr) {
       return _.find(this.category_hierarchy, c => _.isEqual(c.name, cat_arr));
     },

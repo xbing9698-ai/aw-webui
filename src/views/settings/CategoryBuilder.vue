@@ -30,7 +30,7 @@ div
 
   h5 {{ $t('ui.categoryBuilder.commonWords', { category: category.join(' > ') }) }}
   div(v-if="loading")
-    b-spinner.mr-2(small)
+    b-spinner.mr-2(:label="$t('common.loading')" small)
     span.text-muted {{ $t('common.loading') }}
   div(v-else-if="loadError" role="alert")
     p.text-danger {{ loadError }}
@@ -97,7 +97,7 @@ div
                       @ok="createRuleOk()"
                       @hidden="createRuleCancel()")
 
-  b-modal(id="appendRule" :title="$t('ui.categoryBuilder.appendRule')" @ok="handleOk" :ok-disabled="!valid")
+  b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" id="appendRule" :title="$t('ui.categoryBuilder.appendRule')" @ok="handleOk" :ok-disabled="!valid")
     b-form(ref="form" @submit.stop.prevent="handleSubmit")
       b-form-group(:label="$t('ui.categoryBuilder.rule')"
                    label-for="append-category"
@@ -338,7 +338,7 @@ export default {
       } catch (error) {
         if (requestId !== this.requestId) return;
         console.error('Could not load category builder words', error);
-        this.loadError = 'Could not load uncategorized words. Please try again.';
+        this.loadError = this.$t('localization.categories.loadWords');
       } finally {
         if (requestId === this.requestId) this.loading = false;
       }

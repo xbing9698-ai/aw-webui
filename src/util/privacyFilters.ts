@@ -1,3 +1,4 @@
+import { i18n } from '~/i18n';
 export type PrivacyFilterAction = 'drop' | 'redact';
 
 export interface PrivacyFilterRule {
@@ -46,11 +47,15 @@ function optionalString(
     return undefined;
   }
   if (typeof value !== 'string') {
-    errors.push(`Rule ${ruleNumber}: \`${fieldName}\` must be a string when provided.`);
+    errors.push(
+      String(i18n.t('localization.privacy.string', { number: ruleNumber, field: fieldName }))
+    );
     return undefined;
   }
   if (value.trim() === '') {
-    errors.push(`Rule ${ruleNumber}: \`${fieldName}\` cannot be empty when provided.`);
+    errors.push(
+      String(i18n.t('localization.privacy.empty', { number: ruleNumber, field: fieldName }))
+    );
     return undefined;
   }
   return value;
@@ -73,14 +78,14 @@ export function validatePrivacyFiltersInput(input: string): PrivacyFilterValidat
     const message = error instanceof Error ? error.message : String(error);
     return {
       rules: null,
-      errors: [`Invalid JSON: ${message}`],
+      errors: [String(i18n.t('localization.privacy.invalidJson', { error: message }))],
     };
   }
 
   if (!Array.isArray(parsed)) {
     return {
       rules: null,
-      errors: ['Top-level value must be a JSON array of privacy filter rules.'],
+      errors: [String(i18n.t('localization.privacy.array'))],
     };
   }
 
@@ -90,21 +95,21 @@ export function validatePrivacyFiltersInput(input: string): PrivacyFilterValidat
   parsed.forEach((candidate, index) => {
     const ruleNumber = index + 1;
     if (!isRecord(candidate)) {
-      errors.push(`Rule ${ruleNumber}: each rule must be a JSON object.`);
+      errors.push(String(i18n.t('localization.privacy.object', { number: ruleNumber })));
       return;
     }
 
     const errorCountBefore = errors.length;
     const enabled = candidate.enabled;
     if (typeof enabled !== 'boolean') {
-      errors.push(`Rule ${ruleNumber}: \`enabled\` must be a boolean.`);
+      errors.push(String(i18n.t('localization.privacy.boolean', { number: ruleNumber })));
     }
 
     const pattern = candidate.pattern;
     if (typeof pattern !== 'string') {
-      errors.push(`Rule ${ruleNumber}: \`pattern\` must be a string.`);
+      errors.push(String(i18n.t('localization.privacy.patternString', { number: ruleNumber })));
     } else if (pattern.trim() === '') {
-      errors.push(`Rule ${ruleNumber}: \`pattern\` cannot be an empty string.`);
+      errors.push(String(i18n.t('localization.privacy.patternEmpty', { number: ruleNumber })));
     }
 
     const bucketPrefix = optionalString(
@@ -115,13 +120,11 @@ export function validatePrivacyFiltersInput(input: string): PrivacyFilterValidat
     );
     let field: string | undefined;
     if (candidate.field === undefined || candidate.field === null) {
-      errors.push(
-        `Rule ${ruleNumber}: \`field\` is required so the rule only matches the intended event data.`
-      );
+      errors.push(String(i18n.t('localization.privacy.fieldRequired', { number: ruleNumber })));
     } else if (typeof candidate.field !== 'string') {
-      errors.push(`Rule ${ruleNumber}: \`field\` must be a string.`);
+      errors.push(String(i18n.t('localization.privacy.fieldString', { number: ruleNumber })));
     } else if (candidate.field.trim() === '') {
-      errors.push(`Rule ${ruleNumber}: \`field\` cannot be an empty string.`);
+      errors.push(String(i18n.t('localization.privacy.fieldEmpty', { number: ruleNumber })));
     } else {
       field = candidate.field;
     }
@@ -129,11 +132,11 @@ export function validatePrivacyFiltersInput(input: string): PrivacyFilterValidat
 
     const action = candidate.action;
     if (action !== 'drop' && action !== 'redact') {
-      errors.push(`Rule ${ruleNumber}: \`action\` must be either "drop" or "redact".`);
+      errors.push(String(i18n.t('localization.privacy.action', { number: ruleNumber })));
     }
 
     if (action === 'redact' && replacement === undefined) {
-      errors.push(`Rule ${ruleNumber}: redact rules need a non-empty \`replacement\` string.`);
+      errors.push(String(i18n.t('localization.privacy.replacement', { number: ruleNumber })));
     }
 
     if (

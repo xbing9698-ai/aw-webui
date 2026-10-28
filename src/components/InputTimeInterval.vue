@@ -51,32 +51,32 @@ div
         ) {{ $t('ui.timeInterval.apply') }}
 
       template(v-if="mode === 'range'")
-        label.col-form-label.col-form-label-sm.mb-0 Shift
-        div.btn-group(role="group" aria-label="Shift date range")
+        label.col-form-label.col-form-label-sm.mb-0 {{ $t('localization.dates.shift') }}
+        div.btn-group(role="group" :aria-label="$t('localization.dates.shiftRange')")
           input.btn.btn-light.btn-sm(
             type="button" value="-1w"
             @click="shiftDays(-7); $event.target.blur()"
-            aria-label="Shift back one week"
+            :aria-label="$t('localization.dates.backWeek')"
           )
           input.btn.btn-light.btn-sm(
             type="button" value="-1d"
             @click="shiftDays(-1); $event.target.blur()"
-            aria-label="Shift back one day"
+            :aria-label="$t('localization.dates.backDay')"
           )
           input.btn.btn-light.btn-sm(
-            type="button" value="Today"
+            type="button" :value="$t('common.today')"
             @click="setToday(); $event.target.blur()"
-            aria-label="Jump to today"
+            :aria-label="$t('localization.dates.today')"
           )
           input.btn.btn-light.btn-sm(
             type="button" value="+1d"
             @click="shiftDays(1); $event.target.blur()"
-            aria-label="Shift forward one day"
+            :aria-label="$t('localization.dates.forwardDay')"
           )
           input.btn.btn-light.btn-sm(
             type="button" value="+1w"
             @click="shiftDays(7); $event.target.blur()"
-            aria-label="Shift forward one week"
+            :aria-label="$t('localization.dates.forwardWeek')"
           )
 
     div.text-right.d-none.d-md-block(v-if="showUpdate")

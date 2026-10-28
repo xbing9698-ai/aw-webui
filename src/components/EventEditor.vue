@@ -1,5 +1,5 @@
 <template lang="pug">
-b-modal(v-if="event && event.id", :id="'edit-modal-' + event.id", ref="eventEditModal", :title="$t('ui.eventEditor.editTitle')", centered, hide-footer, :no-close-on-backdrop="busy", :no-close-on-esc="busy", :hide-header-close="busy")
+b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" v-if="event && event.id", :id="'edit-modal-' + event.id", ref="eventEditModal", :title="$t('ui.eventEditor.editTitle')", centered, hide-footer, :no-close-on-backdrop="busy", :no-close-on-esc="busy", :hide-header-close="busy")
   div(v-if="!editedEvent")
     | {{ $t('ui.eventEditor.loading') }}
 
@@ -171,8 +171,13 @@ export default {
     requestErrorMessage(e, name) {
       const response = e && e.response;
       const serverMessage = response && response.data && response.data.message;
-      const verb = name === 'delete' ? 'delete' : 'save';
-      return serverMessage || (e && e.message) || `Failed to ${verb} event.`;
+      return (
+        serverMessage ||
+        (e && e.message) ||
+        this.$t(
+          name === 'delete' ? 'localization.errors.deleteEvent' : 'localization.errors.saveEvent'
+        )
+      );
     },
     // Hiding is best-effort: the modal may already be gone if a parent
     // re-rendered or destroyed this component.

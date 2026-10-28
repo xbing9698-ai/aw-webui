@@ -12,7 +12,7 @@ div
         span(v-if="selectableHosts.length <= 1 && !isMultidevice") {{ host }}
         // Device selector: a single device, a subset, or "All devices".
         // The selection is encoded in the route's :host param, see util/multidevice.ts.
-        b-dropdown.host-selector(
+        b-dropdown.host-selector(:toggle-text="$t('localization.controls.dropdown')"
           v-else
           size="sm"
           variant="link"
@@ -97,7 +97,7 @@ div
               td.text-right.text-nowrap {{ d.duration | friendlyduration }}
               td.text-muted.text-nowrap
                 span(v-if="d.overlap >= 60") ({{ secondsToDuration(d.overlap) }} {{ $t('activity.overlap') }})
-    b-alert.py-1.px-2.mb-1.small(
+    b-alert.py-1.px-2.mb-1.small(:dismiss-label="$t('localization.controls.close')"
       v-if="isMultidevice && !multideviceNoteDismissed"
       show
       variant="info"
@@ -154,7 +154,7 @@ div
         ) {{ extendedPeriodLabel }}
       // Kebab sits outside the b-button-group so the last pressed pill
       // (whichever it is) keeps its rounded right corner.
-      b-dropdown.kebab-dropdown.ml-1(
+      b-dropdown.kebab-dropdown.ml-1(:toggle-text="$t('localization.controls.dropdown')"
         size="sm"
         variant="outline-secondary"
         toggle-class="border-0"
@@ -176,8 +176,8 @@ div
       b-input-group-prepend
         b-button.px-2(:to="{ path: link_prefix + '/' + previousPeriod() + '/' + subview + '/' + currentViewId, query: $route.query }",
                  variant="outline-dark",
-                 :title="$t('activity.previousPeriod', { period: periodLength })",
-                 :aria-label="$t('activity.previousPeriod', { period: periodLength })")
+                 :title="$t('localization.dates.previous')",
+                 :aria-label="$t('localization.dates.previous')")
           icon(name="arrow-left")
       template(v-if="dateRange")
         input.form-control.form-control-sm.activity-dateinput(
@@ -227,8 +227,8 @@ div
       b-input-group-append
         b-button.px-2(:to="{ path: link_prefix + '/' + nextPeriod() + '/' + subview + '/' + currentViewId, query: $route.query }",
                       :disabled="nextDisabled", variant="outline-dark",
-                      :title="$t('activity.nextPeriod', { period: periodLength })",
-                      :aria-label="$t('activity.nextPeriod', { period: periodLength })")
+                      :title="$t('localization.dates.next')",
+                      :aria-label="$t('localization.dates.next')")
           icon(name="arrow-right")
 
     div.ml-auto
@@ -289,7 +289,7 @@ div
   ul.row.nav.nav-tabs.mt-4
     li.nav-item(v-for="view in views")
       router-link.nav-link(:to="{ name: 'activity-view', params: {...$route.params, view_id: view.id}, query: $route.query}" :class="{'router-link-exact-active': currentView.id == view.id}")
-        h6 {{view.name}}
+        h6 {{ viewDisplayName(view) }}
 
     li.nav-item(style="margin-left: auto")
       a.nav-link(@click="$refs.new_view.show()")
@@ -298,7 +298,7 @@ div
           span.d-none.d-md-inline
             | {{ $t('activity.newView') }}
 
-  b-modal(id="new_view" ref="new_view" :title="$t('activity.newViewTitle')" @show="resetModal" @hidden="resetModal" @ok="handleOk")
+  b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" id="new_view" ref="new_view" :title="$t('activity.newViewTitle')" @show="resetModal" @hidden="resetModal" @ok="handleOk")
     div.my-1
       b-input-group.my-1(:prepend="$t('activity.viewId')")
         b-form-input(v-model="new_view.id")
@@ -470,6 +470,7 @@ import { useSettingsStore } from '~/stores/settings';
 import { useCategoryStore } from '~/stores/categories';
 import { useActivityStore, QueryOptions } from '~/stores/activity';
 import { useViewsStore } from '~/stores/views';
+import { viewDisplayName } from '~/util/displayNames';
 import { useBucketsStore } from '~/stores/buckets';
 import {
   ALL_DEVICES,
@@ -923,6 +924,9 @@ export default {
   },
 
   methods: {
+    viewDisplayName(view) {
+      return viewDisplayName(view, this.$t.bind(this));
+    },
     secondsToDuration(seconds: number): string {
       return seconds_to_duration(seconds);
     },

@@ -49,7 +49,7 @@ div
 
   aw-selectable-eventview(:events="events", :event_type="event_type")
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :header-close-label="$t('localization.controls.close')"
     v-model="showSaveQueryModal"
     :title="$t('ui.query.saveTitle')"
     :ok-title="$t('common.save')"
@@ -63,7 +63,7 @@ div
         :placeholder="$t('ui.query.namePlaceholder')"
       )
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :header-close-label="$t('localization.controls.close')"
     v-model="showRenameQueryModal"
     :title="$t('ui.query.renameTitle')"
     :ok-title="$t('ui.query.rename')"
@@ -150,7 +150,8 @@ RETURN = sort_by_duration(merged_events);
       return this.savedQueries.find(query => query.id === this.selected_saved_query_id) || null;
     },
     eventcount_str: function () {
-      if (Array.isArray(this.events)) return 'Number of events: ' + this.events.length;
+      if (Array.isArray(this.events))
+        return this.$t('ui.query.eventCount', { count: this.events.length });
       else return '';
     },
   },
@@ -166,7 +167,7 @@ RETURN = sort_by_duration(merged_events);
         return true;
       } catch (e) {
         console.error('Failed to save query presets', e);
-        this.saved_query_error = 'Failed to save query presets.';
+        this.saved_query_error = this.$t('ui.query.saveError');
         return false;
       }
     },
@@ -187,8 +188,13 @@ RETURN = sort_by_duration(merged_events);
 
       if (current) {
         const confirmed = await this.$bvModal.msgBoxConfirm(
-          `Update saved query "${current.name}"?`,
-          { title: 'Update Query', okTitle: 'Update', cancelTitle: 'Cancel', centered: true }
+          this.$t('ui.query.updateConfirm', { name: current.name }),
+          {
+            title: this.$t('localization.query.updateTitle'),
+            okTitle: this.$t('localization.query.update'),
+            cancelTitle: this.$t('common.cancel'),
+            centered: true,
+          }
         );
         if (!confirmed) {
           return;
@@ -223,7 +229,7 @@ RETURN = sort_by_duration(merged_events);
 
       const trimmedName = this.saveQueryName.trim();
       if (_.isEmpty(trimmedName)) {
-        this.saved_query_error = 'Saved query name cannot be empty.';
+        this.saved_query_error = this.$t('ui.query.emptyName');
         return;
       }
 
@@ -263,7 +269,7 @@ RETURN = sort_by_duration(merged_events);
 
       const trimmedName = this.renameQueryName.trim();
       if (_.isEmpty(trimmedName)) {
-        this.saved_query_error = 'Saved query name cannot be empty.';
+        this.saved_query_error = this.$t('ui.query.emptyName');
         return;
       }
 
@@ -283,12 +289,12 @@ RETURN = sort_by_duration(merged_events);
       }
 
       const confirmed = await this.$bvModal.msgBoxConfirm(
-        `Delete saved query "${this.selectedSavedQuery.name}"? This cannot be undone.`,
+        this.$t('ui.query.deleteConfirm', { name: this.selectedSavedQuery.name }),
         {
-          title: 'Delete Query',
-          okTitle: 'Delete',
+          title: this.$t('localization.query.deleteTitle'),
+          okTitle: this.$t('common.delete'),
           okVariant: 'danger',
-          cancelTitle: 'Cancel',
+          cancelTitle: this.$t('common.cancel'),
           centered: true,
         }
       );
@@ -311,7 +317,7 @@ RETURN = sort_by_duration(merged_events);
         const categoryRules = useCategoryStore().classes_for_query;
 
         if (useCategoryStore().classes_for_query.length === 0) {
-          this.error = '__CATEGORIES__ was used in query but no categories have been defined yet.';
+          this.error = this.$t('ui.query.noCategories');
           return;
         }
 

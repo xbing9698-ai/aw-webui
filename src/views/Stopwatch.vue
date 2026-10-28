@@ -32,10 +32,10 @@ div
 
   b-alert(v-if="error" show variant="danger")
     | {{ error }}
-    b-button.ml-2(size="sm" :disabled="refreshing" @click="getEvents()") Retry
+    b-button.ml-2(size="sm" :disabled="refreshing" @click="getEvents()") {{ $t('localization.stopwatch.retry') }}
 
   div(v-if="loading")
-    b-spinner.mr-2(small)
+    b-spinner.mr-2(:label="$t('common.loading')" small)
     span.text-muted {{ $t('common.loading') }}
   div(v-else)
     h3.mt-3 {{ $t('stopwatch.running') }}
@@ -49,7 +49,7 @@ div
       v-if="hasMoreRunning" :disabled="refreshing"
       @click="getEvents(runningLimit + 100, historyLimit)"
       variant="outline-secondary"
-    ) Show more running timers
+    ) {{ $t('localization.stopwatch.moreRunning') }}
 
     div(v-if="stoppedTimers.length > 0")
       h3.mt-4.mb-2 {{ $t('stopwatch.history') }}
@@ -62,7 +62,7 @@ div
         v-if="hasMoreHistory" :disabled="refreshing"
         @click="getEvents(runningLimit, historyLimit + 100)"
         variant="outline-secondary"
-      ) Show more history
+      ) {{ $t('localization.stopwatch.moreHistory') }}
 </template>
 
 <style scoped lang="scss">
@@ -196,7 +196,7 @@ export default {
         this.hasMoreHistory = stopped.length > historyLimit;
       } catch (error) {
         if (requestId === this.requestId) {
-          this.error = 'Unable to load stopwatch timers. Please retry.';
+          this.error = this.$t('localization.stopwatch.loadError');
         }
       } finally {
         if (requestId === this.requestId) {

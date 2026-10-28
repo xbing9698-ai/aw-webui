@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     b-alert(v-if="isPollVisible", variant="info", show)
-      button(type="button", class="close", @click="isPollVisible=false") &times;
+      button(type="button", class="close", :aria-label="$t('localization.controls.close')", @click="isPollVisible=false") &times;
       form
         p
           | {{ $t('ui.userPoll.question') }}
@@ -17,7 +17,7 @@
         input(type="submit" :value="$t('ui.userPoll.submit')" @click="submit")
 
     b-alert(v-if="isPosFollowUpVisible", variant="info" show)
-      button(type="button", class="close", @click="isPosFollowUpVisible=false") &times;
+      button(type="button", class="close", :aria-label="$t('localization.controls.close')", @click="isPosFollowUpVisible=false") &times;
       p
         | {{ $t('ui.userPoll.positiveIntro') }}
         br
@@ -36,16 +36,16 @@
         li
           | {{ $t('ui.userPoll.join') }} #[a(href="https://discord.gg/vDskV9q") Discord]
         li
-          | {{ $t('ui.userPoll.newsletter') }} #[a(href="http://eepurl.com/cTU6QX") newsletter]
+          | {{ $t('ui.userPoll.newsletter') }} #[a(href="http://eepurl.com/cTU6QX") {{ $t('localization.feedback.newsletter') }}]
 
     b-alert(v-if="isNegFollowUpVisible", variant="info" show)
-      button(type="button", class="close", @click="isNegFollowUpVisible=false") &times;
+      button(type="button", class="close", :aria-label="$t('localization.controls.close')", @click="isNegFollowUpVisible=false") &times;
       | {{ $t('ui.userPoll.negativeIntro') }}
       ul
         li
-          | {{ $t('ui.userPoll.feedback') }} #[a(href="https://forms.gle/q2N9K5RoERBV8kqPA") feedback form]
+          | {{ $t('ui.userPoll.feedback') }} #[a(href="https://forms.gle/q2N9K5RoERBV8kqPA") {{ $t('localization.feedback.form') }}]
         li
-          | {{ $t('ui.userPoll.vote') }} #[a(href="https://forum.activitywatch.net/c/features") forum]
+          | {{ $t('ui.userPoll.vote') }} #[a(href="https://forum.activitywatch.net/c/features") {{ $t('localization.feedback.forum') }}]
 </template>
 
 <style scoped>

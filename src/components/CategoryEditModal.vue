@@ -1,6 +1,6 @@
 <template lang="pug">
 // The category edit modal
-b-modal(id="edit" ref="edit" :title="$t('ui.categoryEditor.editTitle')" @show="resetModal" @hidden="hidden" @ok="handleOk" @keydown.native.enter="handleEnter" :ok-disabled="!canSubmit")
+b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" id="edit" ref="edit" :title="$t('ui.categoryEditor.editTitle')" @show="resetModal" @hidden="hidden" @ok="handleOk" @keydown.native.enter="handleEnter" :ok-disabled="!canSubmit")
   div.my-1
     b-input-group.my-1(:prepend="$t('ui.categoryEditor.name')")
       b-form-input(v-model="editing.name")

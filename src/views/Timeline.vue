@@ -70,7 +70,7 @@ div
 
     // Display options (swimlanes, future visual toggles) tucked behind a
     // ghost kebab so they don't compete visually with Filters.
-    b-dropdown.kebab-dropdown.mr-2(
+    b-dropdown.kebab-dropdown.mr-2(:toggle-text="$t('localization.controls.dropdown')"
       size="sm"
       variant="outline-secondary"
       toggle-class="border-0"
@@ -99,7 +99,7 @@ div
     | {{ $t('timeline.noEvents') }}
 
   b-alert.mb-2(v-if="categoryError", variant="warning", show)
-    | Categorized timeline unavailable. Raw bucket events are still shown.
+    | {{ $t('localization.timeline.unavailable') }}
 
   div(v-if="buckets !== null")
     vis-timeline(:buckets="buckets", :categorizedEvents="categorizedEvents", :showRowLabels='true', :queriedInterval="daterange", :swimlane="swimlane", :groupGranularity="timelineGroupGranularity", :updateTimelineWindow='updateTimelineWindow', @event-saved="onEventSaved")

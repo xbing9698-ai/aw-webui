@@ -1,3 +1,4 @@
+import { i18n } from '~/i18n';
 // Original source: https://bl.ocks.org/kerryrodden/7090426
 //
 // Copyright 2013 Google Inc. All Rights Reserved.
@@ -286,7 +287,7 @@ function update(
       // end-exclusive against the whole-day bounds computed above.
       const now = moment();
       if (!now.isBefore(root_start) && now.isBefore(root_end)) {
-        drawClock(now.hour(), now.minute(), 'Now');
+        drawClock(now.hour(), now.minute(), String(i18n.t('localization.charts.now')));
       }
     }
 

@@ -144,7 +144,7 @@ export default {
     addAlert: async function () {
       const goal = cleanAlertGoal(this.editing_alert);
       if (goal === null) {
-        this.error = 'A goal needs a name, a category, and a positive number of minutes.';
+        this.error = this.$t('localization.alerts.invalid');
         return;
       }
       if (await this.persistAlerts(this.alerts.concat(goal))) {
@@ -174,7 +174,7 @@ export default {
         // update() patches the store before persisting; roll back that state
         // too, so remounts and unrelated settings saves cannot revive it.
         this.settingsStore.$patch({ alerts: previousStored });
-        this.error = 'Failed to save alert goals. Please try again.';
+        this.error = this.$t('localization.alerts.saveError');
         return false;
       } finally {
         this.saving = false;

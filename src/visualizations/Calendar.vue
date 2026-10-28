@@ -17,9 +17,11 @@ div.mx-3
 <script lang="ts">
 import { getTitleAttr, getColorFromString } from '../util/color';
 import moment from 'moment';
+import { i18n } from '~/i18n';
 import _ from 'lodash';
 import FullCalendar from '@fullcalendar/vue';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import allLocales from '@fullcalendar/core/locales-all';
 import { calendarTimeBounds } from '~/util/calendar';
 
 // TODO: Use canonical timeline query, with flooding and categorization
@@ -40,6 +42,8 @@ export default {
       const events: any[] = Array.isArray(this.events) ? this.events.filter(Boolean) : [];
       return {
         plugins: [timeGridPlugin],
+        locales: allLocales,
+        locale: i18n.locale.toLowerCase(),
         initialView: this.view,
         eventClick: this.onEventClick,
         events: events,

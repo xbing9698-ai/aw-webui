@@ -114,10 +114,10 @@ export default {
       return { start, end };
     },
     namefunc(): (e: AggregatedEvent) => string {
-      return e => e.data.display;
+      return e => (e.data.raw == null ? String(this.$t('common.unknown')) : e.data.display);
     },
     hoverfunc(): (e: AggregatedEvent) => string {
-      return e => e.data.display;
+      return e => (e.data.raw == null ? String(this.$t('common.unknown')) : e.data.display);
     },
     colorfunc(): (e: AggregatedEvent) => string {
       return e => e.data.colorKey;

@@ -9,7 +9,7 @@ mixin navMain
       | {{ $t('nav.activity') }}
 
   // If multiple (or no) activity views are available
-  b-nav-item-dropdown(v-if="!activityViews || activityViews.length !== 1")
+  b-nav-item-dropdown(:toggle-text="$t('localization.controls.dropdown')" v-if="!activityViews || activityViews.length !== 1")
     template(slot="button-content")
       div.d-inline.px-2.px-lg-1
         icon(name="calendar-day")
@@ -40,7 +40,7 @@ mixin navMain
       | {{ $t('nav.stopwatch') }}
 
 mixin navTools(desktop)
-  b-nav-item-dropdown
+  b-nav-item-dropdown(:toggle-text="$t('localization.controls.dropdown')")
     template(slot="button-content")
       div.d-inline.px-2.px-lg-1
         icon(name="tools")
@@ -97,7 +97,7 @@ mixin navTools(desktop)
 //- Flat entries in the drawer; one dropdown in the desktop navbar, where three
 //- more inline links would run into the absolutely centered brand.
 mixin navNativeDropdown
-  b-nav-item-dropdown(v-if="nativeMenuActions.length" right data-testid="navbar-native-menu")
+  b-nav-item-dropdown(:toggle-text="$t('localization.controls.dropdown')" v-if="nativeMenuActions.length" right data-testid="navbar-native-menu")
     template(slot="button-content")
       div.d-inline.px-2.px-lg-1
         icon(name="mobile")
@@ -134,7 +134,7 @@ div(:class="{'fixed-top-padding': fixedTopMenu}")
         b-badge.ml-2.align-middle(v-if="researchEdition" variant="info" data-testid="research-edition-badge") {{ $t('app.researchEdition') }}
 
     // Opens the drawer (b-sidebar listens to the same toggle event as b-collapse)
-    b-navbar-toggle(target="nav-drawer" data-testid="nav-drawer-toggle")
+    b-navbar-toggle(:label="$t('localization.controls.navigation')" target="nav-drawer" data-testid="nav-drawer-toggle")
 
     // Desktop: inline navigation. Never toggled open below lg; phones use the drawer.
     b-collapse#nav-collapse(is-nav)

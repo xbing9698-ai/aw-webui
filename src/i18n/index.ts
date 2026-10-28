@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import moment from 'moment';
+import { Settings as LuxonSettings } from 'luxon';
 import 'moment/locale/ar';
 import 'moment/locale/bn';
 import 'moment/locale/de';
@@ -239,6 +240,7 @@ export function isRtlLocale(locale: AppLocale): boolean {
 }
 
 function applyDocumentLocale(locale: AppLocale): void {
+  LuxonSettings.defaultLocale = locale;
   if (typeof document === 'undefined') return;
   document.documentElement.lang = HTML_LANG[locale];
   document.documentElement.dir = isRtlLocale(locale) ? 'rtl' : 'ltr';

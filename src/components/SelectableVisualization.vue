@@ -4,7 +4,7 @@ div(v-if="editable || !activityStore.buckets.loaded || has_prerequisites || !set
     icon.handle(name="bars" v-if="editable" style="opacity: 0.6; cursor: grab;")
     | {{ visualizations[type].title }}
   div(v-if="editable").vis-style-dropdown-btn
-    b-dropdown.mr-1(size="sm" variant="outline-secondary" right)
+    b-dropdown.mr-1(:toggle-text="$t('localization.controls.dropdown')" size="sm" variant="outline-secondary" right)
       template(v-slot:button-content="")
         icon(name="cog")
       b-dropdown-item(v-for="t in types" :key="t" variant="outline-secondary" @click="$emit('onTypeChange', id, t)")
@@ -75,7 +75,7 @@ div(v-if="editable || !activityStore.buckets.loaded || has_prerequisites || !set
                  with_limit)
     div(v-if="type == 'top_categories'")
       aw-summary(:fields="activityStore.category.top",
-                 :namefunc="e => e.data['$category'].join(' > ')",
+                 :namefunc="e => categoryName(e.data['$category'])",
                  :colorfunc="e => e.data['$category']",
                  :linkfunc="e => '#' + $route.path + '?category=' + encodeURIComponent(e.data['$category'].join('>'))",
                  with_limit)
@@ -120,6 +120,7 @@ div(v-if="editable || !activityStore.buckets.loaded || has_prerequisites || !set
 </style>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import _ from 'lodash';
 import 'vue-awesome/icons/cog';
 import 'vue-awesome/icons/times';
@@ -190,7 +191,7 @@ export default {
         return f;
       },
       top_editor_files_hoverfunc: e => {
-        return 'file: ' + e.data.file + '\n' + 'project: ' + e.data.project;
+        return this.$t('localization.charts.file', { file: e.data.file, project: e.data.project });
       },
       // TODO: Move this function somewhere else
       top_editor_projects_namefunc: e => {
@@ -364,6 +365,9 @@ export default {
     }
   },
   methods: {
+    categoryName(path) {
+      return categoryDisplayName(path, this.$t.bind(this));
+    },
     onWatcherPropsChange(newProps) {
       if (!this.viewId) return;
       const mergedProps = { ...(this.props || {}), ...newProps };

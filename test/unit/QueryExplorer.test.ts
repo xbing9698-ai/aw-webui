@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import QueryExplorerComponent from '~/views/QueryExplorer.vue';
 
 // Tests call Options API members directly, which the Vue constructor type doesn't expose.
@@ -8,6 +9,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
     const msgBoxConfirm = jest.fn().mockResolvedValue(false);
     const persistSavedQueries = jest.fn();
     const vm = {
+      $t: Vue.prototype.$t,
       $bvModal: { msgBoxConfirm },
       enddate: '2026-05-21',
       event_type: 'currentwindow',
@@ -47,6 +49,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
   test('keeps save modal open when the query name is blank', async () => {
     const event = { preventDefault: jest.fn() };
     const vm = {
+      $t: Vue.prototype.$t,
       saveQueryName: '   ',
       saved_query_error: '',
     };
@@ -64,6 +67,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
       resolvePersistence = resolve;
     });
     const vm = {
+      $t: Vue.prototype.$t,
       enddate: '2026-05-21',
       event_type: 'currentwindow',
       persistSavedQueries: jest.fn().mockReturnValue(persistence),
@@ -90,6 +94,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
   test('closes save modal after persistence succeeds', async () => {
     const event = { preventDefault: jest.fn() };
     const vm = {
+      $t: Vue.prototype.$t,
       enddate: '2026-05-21',
       event_type: 'currentwindow',
       persistSavedQueries: jest.fn().mockResolvedValue(true),
@@ -111,6 +116,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
   test('keeps rename modal open when the query name is blank', async () => {
     const event = { preventDefault: jest.fn() };
     const vm = {
+      $t: Vue.prototype.$t,
       renameQueryName: '   ',
       saved_query_error: '',
       selectedSavedQuery: { id: 'daily-coding-time', name: 'Daily Coding Time' },
@@ -130,6 +136,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
     });
     const selectedSavedQuery = { id: 'daily-coding-time', name: 'Daily Coding Time' };
     const vm = {
+      $t: Vue.prototype.$t,
       persistSavedQueries: jest.fn().mockReturnValue(persistence),
       renameQueryName: 'Coding Time',
       savedQueries: [selectedSavedQuery],
@@ -152,6 +159,7 @@ describe('QueryExplorer saveCurrentQuery', () => {
     const event = { preventDefault: jest.fn() };
     const selectedSavedQuery = { id: 'daily-coding-time', name: 'Daily Coding Time' };
     const vm = {
+      $t: Vue.prototype.$t,
       persistSavedQueries: jest.fn().mockResolvedValue(true),
       renameQueryName: 'Coding Time',
       savedQueries: [selectedSavedQuery],

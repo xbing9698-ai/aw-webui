@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import SearchComponent from '~/views/Search.vue';
 
 // Tests call Options API members directly, which the Vue constructor type doesn't expose.
@@ -27,6 +28,7 @@ const windowEvent = {
 function searchVm(query) {
   return {
     ...Search.data(),
+    $t: Vue.prototype.$t,
     pattern: 'example',
     queryOptions: {
       hostname: 'browser-only',

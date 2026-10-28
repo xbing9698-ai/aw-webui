@@ -1,3 +1,5 @@
+import { i18n } from '~/i18n';
+import { categoryDisplayName } from './displayNames';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -16,7 +18,11 @@ interface Dataset {
   data: (number | null)[];
 }
 
-export function buildBarchartDataset(data_by_hour: HourlyData[], classes: Category[]): Dataset[] {
+export function buildBarchartDataset(
+  data_by_hour: HourlyData[],
+  classes: Category[],
+  syntheticSearch = false
+): Dataset[] {
   const data = data_by_hour;
   if (data) {
     const category_names: Set<string> = new Set(
@@ -37,7 +43,12 @@ export function buildBarchartDataset(data_by_hour: HourlyData[], classes: Catego
         else return null;
       });
       return {
-        label: path.length ? path.join(' > ') : 'Uncategorized',
+        label:
+          syntheticSearch && path.length === 1 && path[0] === 'searched'
+            ? String(i18n.t('localization.fields.searched'))
+            : path.length
+            ? categoryDisplayName(path, k => String(i18n.t(k)))
+            : String(i18n.t('common.uncategorized')),
         backgroundColor: getColorFromCategory(c, classes),
         data: values,
       } as Dataset;

@@ -37,7 +37,9 @@ export function friendlydate(timestamp: string | Moment) {
   const m = moment.parseZone(timestamp);
   const sinceNow = moment.duration(m.diff(now));
   if (-sinceNow.asSeconds() <= 60) {
-    return `${Math.round(-sinceNow.asSeconds())}s ago`;
+    return String(
+      i18n.t('localization.dates.secondsAgo', { seconds: Math.round(-sinceNow.asSeconds()) })
+    );
   } else if (-sinceNow.asSeconds() <= 60 * 60 * 24) {
     return sinceNow.humanize(true);
   }
@@ -62,7 +64,7 @@ export function compact_relative_time(
   ];
   const [unit, label, divisor] = units.find(([, , size]) => Math.abs(seconds) >= size) || units[5];
   const value = Math.trunc(seconds / divisor);
-  if (unitOnly) {
+  if (unitOnly && locale.split('-')[0] === 'en') {
     return `${value > 0 ? '+' : ''}${Math.abs(value)}${label}`;
   }
   if (locale.split('-')[0] === 'en') {
@@ -141,28 +143,31 @@ export function get_today_with_offset(offset?: string): string {
   return moment().subtract(offset_dur).startOf('day').format('YYYY-MM-DD');
 }
 
-export function format_weekday_short(dateParam: Date, locale?: string | string[]) {
+export function format_weekday_short(dateParam: Date, locale: string | string[] = i18n.locale) {
   return new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(normalize_date(dateParam));
 }
 
-export function format_day_of_month(dateParam: Date, locale?: string | string[]) {
+export function format_day_of_month(dateParam: Date, locale: string | string[] = i18n.locale) {
   return new Intl.DateTimeFormat(locale, { day: 'numeric' }).format(normalize_date(dateParam));
 }
 
-export function get_short_month_labels(locale?: string | string[]) {
+export function get_short_month_labels(locale: string | string[] = i18n.locale) {
   return Array.from({ length: 12 }, (_, month) =>
     new Intl.DateTimeFormat(locale, { month: 'short' }).format(new Date(2020, month, 1, 12))
   );
 }
 
 // Format a date as locale-aware short date (e.g. "Jun 15" in en-US, "15 jun" in sv-SE)
-export function format_date_short(date: Date | string, locale?: string | string[]) {
+export function format_date_short(date: Date | string, locale: string | string[] = i18n.locale) {
   const d = date instanceof Date ? date : new Date(date);
   return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(d);
 }
 
 // Format a date with weekday prefix (e.g. "Mon, Jun 15" in en-US, "mån 15 jun" in sv-SE)
-export function format_date_with_weekday(date: Date | string, locale?: string | string[]) {
+export function format_date_with_weekday(
+  date: Date | string,
+  locale: string | string[] = i18n.locale
+) {
   const d = date instanceof Date ? date : new Date(date);
   return new Intl.DateTimeFormat(locale, {
     weekday: 'short',
@@ -172,7 +177,7 @@ export function format_date_with_weekday(date: Date | string, locale?: string | 
 }
 
 // Format a time-of-day string locale-aware (e.g. "14:30:05" or "2:30:05 PM" per browser locale)
-export function format_time_of_day(date: Date | string, locale?: string | string[]) {
+export function format_time_of_day(date: Date | string, locale: string | string[] = i18n.locale) {
   const d = date instanceof Date ? date : new Date(date);
   return new Intl.DateTimeFormat(locale, {
     hour: '2-digit',

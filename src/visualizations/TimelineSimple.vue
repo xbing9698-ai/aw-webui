@@ -23,6 +23,14 @@ export default {
     events: Array,
   },
   watch: {
+    '$i18n.locale'() {
+      timeline_simple.update(
+        this.$el,
+        this.events,
+        this.event_type,
+        this.$t('visualizations.noData')
+      );
+    },
     events: function () {
       timeline_simple.update(
         this.$el,

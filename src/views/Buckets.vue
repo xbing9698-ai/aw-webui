@@ -25,7 +25,7 @@ div
               | {{ device.last_updated | friendlytime }}
           div.small.text-muted(v-else)
             | {{ $t('buckets.noEventsYet') }}
-      b-dropdown.kebab-dropdown(
+      b-dropdown.kebab-dropdown(:toggle-text="$t('localization.controls.dropdown')"
         size="sm",
         variant="outline-secondary",
         toggle-class="border-0",
@@ -58,7 +58,7 @@ div
             span.d-md-none {{ compactRelativeTime(bucket.last_updated, true) }}
             span.d-none.d-md-inline {{ compactRelativeTime(bucket.last_updated) }}
           small.text-muted.bucket-updated(v-else) {{ $t('buckets.noEvents') }}
-        b-dropdown.kebab-dropdown(variant="outline-secondary", toggle-class="border-0", size="sm", right, no-caret, boundary="window", :title="$t('common.more')")
+        b-dropdown.kebab-dropdown(:toggle-text="$t('localization.controls.dropdown')" variant="outline-secondary", toggle-class="border-0", size="sm", right, no-caret, boundary="window", :title="$t('common.more')")
           template(v-slot:button-content)
             icon(name="ellipsis-v")
           b-dropdown-item(@click="export_bucket_json(bucket.id)", :title="$t('buckets.exportBucketJson')")
@@ -78,7 +78,7 @@ div
         | &nbsp;
         | {{ msg }}
 
-  b-modal(id="delete-modal", :title="$t('buckets.deleteBucketTitle')", centered, hide-footer)
+  b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" id="delete-modal", :title="$t('buckets.deleteBucketTitle')", centered, hide-footer)
     | {{ $t('buckets.deleteConfirm', { id: delete_bucket_selected }) }}
     br
     br
@@ -90,7 +90,7 @@ div
       b-button(@click="deleteBucket(delete_bucket_selected)", variant="danger")
         | {{ $t('common.confirm') }}
 
-  b-modal(id="delete-host-modal", :title="deleteHostModalTitle", centered, hide-footer, @hidden="delete_host_selected = null; delete_host_error = null")
+  b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')" id="delete-host-modal", :title="deleteHostModalTitle", centered, hide-footer, @hidden="delete_host_selected = null; delete_host_error = null")
     template(v-if="delete_host_selected")
       | {{ $t('buckets.deleteHostConfirmPrefix') }}
       |
@@ -123,15 +123,15 @@ div
 
   b-card-group.deck
     b-card(:header="$t('buckets.importBuckets')")
-      b-alert(v-if="import_success" show variant="success" dismissible @dismissed="import_success = false")
+      b-alert(:dismiss-label="$t('localization.controls.close')" v-if="import_success" show variant="success" dismissible @dismissed="import_success = false")
         | {{ $t('buckets.importSuccess') }}
-      b-alert(v-if="import_error" show variant="danger" dismissible @dismissed="import_error = null")
+      b-alert(:dismiss-label="$t('localization.controls.close')" v-if="import_error" show variant="danger" dismissible @dismissed="import_error = null")
         | {{ import_error }}
-      b-form-file(v-model="import_file"
+      b-form-file(:browse-text="$t('localization.controls.browse')" :no-drop-placeholder="$t('localization.controls.notAllowed')" v-model="import_file"
                   :placeholder="$t('buckets.importPlaceholder')"
                   :drop-placeholder="$t('buckets.importDrop')")
       div.mt-2(v-if="import_file")
-        b-spinner.mr-2(small)
+        b-spinner.mr-2(:label="$t('common.loading')" small)
         small.text-muted {{ $t('buckets.importing') }}
       small.d-block.mt-2.text-muted
         | {{ $t('buckets.importHelpNew') }}
@@ -141,10 +141,10 @@ div
                :title="$t('buckets.exportAllJson')",
                :disabled="exporting",
                variant="outline-secondary")
-        b-spinner.mr-1(v-if="exporting", small)
+        b-spinner.mr-1(:label="$t('common.loading')" v-if="exporting", small)
         icon.mr-1(v-else, name="download")
         | {{ exporting ? $t('buckets.exporting') : $t('buckets.exportAllJson') }}
-      b-alert.mt-2(v-if="export_error", variant="danger", show, dismissible, @dismissed="export_error = null")
+      b-alert.mt-2(:dismiss-label="$t('localization.controls.close')" v-if="export_error", variant="danger", show, dismissible, @dismissed="export_error = null")
         | {{ export_error }}
 
   hr
@@ -358,19 +358,21 @@ export default {
       const checks = [
         {
           msg: () => {
-            return `Device known by several hostnames: ${device.hostnames}`;
+            return this.$t('localization.buckets.hostnames', {
+              hostnames: String(device.hostnames),
+            });
           },
           failed: () => device.hostnames.length > 1,
         },
         {
           msg: () => {
-            return `Device known by several IDs: ${device.device_ids}`;
+            return this.$t('localization.buckets.ids', { ids: String(device.device_ids) });
           },
           failed: () => device.device_ids.length > 1,
         },
         {
           msg: () => {
-            return `Device is a special device, unattributed to a hostname, or not assigned a device ID.`;
+            return this.$t('localization.buckets.special');
           },
           failed: () => _.isEqual(device.hostnames, ['unknown']),
         },

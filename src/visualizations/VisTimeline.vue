@@ -87,6 +87,7 @@ div#visualization {
 </style>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import _ from 'lodash';
 import { markRaw } from 'vue';
 import Color from 'color';
@@ -199,6 +200,11 @@ export default {
     },
   },
   watch: {
+    '$i18n.locale'() {
+      this.applyLocale();
+      this.preparedItems.clear();
+      this.update(false);
+    },
     groupGranularity() {
       this.expandedGroups = [];
       this.update(false);
@@ -245,6 +251,7 @@ export default {
         passive: false,
       });
       this.options.tooltip.template = item => item.title || this.tooltipForItem(item.id);
+      this.applyLocale();
       this.timeline = markRaw(new Timeline(el, this.itemData, this.groupData, this.options));
       this.timeline.on('rangechange', this.scheduleViewportUpdate);
       this.timeline.on('select', properties => {
@@ -272,6 +279,21 @@ export default {
     }
   },
   methods: {
+    applyLocale() {
+      const locale = this.$i18n.locale.toLowerCase();
+      const options = {
+        locale,
+        locales: {
+          [locale]: {
+            current: this.$t('localization.controls.current'),
+            time: this.$t('localization.controls.time'),
+            deleteSelected: this.$t('localization.controls.deleteSelected'),
+          },
+        },
+      };
+      Object.assign(this.options, options);
+      if (this.timeline) this.timeline.setOptions(options);
+    },
     formatGroupDuration(duration: number): string {
       const seconds = Number(duration.toFixed(6));
       return Number.isInteger(seconds)
@@ -394,7 +416,9 @@ export default {
           this.openEditor();
         });
       } else {
-        alert('selected multiple items: ' + JSON.stringify(properties.items));
+        alert(
+          this.$t('localization.timeline.multiple', { items: JSON.stringify(properties.items) })
+        );
       }
     },
     abbreviateBucketName(bucketId: string): string {
@@ -529,7 +553,10 @@ export default {
       });
 
       if (this.categorizedEvents?.length) {
-        groups.unshift({ id: CATEGORIZED_ROW, content: this.showRowLabels ? 'Categorized' : '' });
+        groups.unshift({
+          id: CATEGORIZED_ROW,
+          content: this.showRowLabels ? this.$t('localization.timeline.categorized') : '',
+        });
       }
 
       const visible = visibleTimelineEvents(index, start - buffer, end + buffer);
@@ -558,7 +585,7 @@ export default {
                 duration: this.formatGroupDuration(item.event.duration),
               })
             : categorized
-            ? name.join(' > ')
+            ? categoryDisplayName(name, this.$t.bind(this))
             : getTitleAttr(item.bucket, item.event),
           start: item.start,
           end: item.end,
@@ -577,11 +604,14 @@ export default {
       this.preparedItems = new Map(items.map(item => [item.id, item]));
       groups = groups.filter(group => index.groups.has(group.id));
       if (this.queriedInterval && this.showQueriedInterval) {
-        groups.push({ id: 'queried-interval', content: 'queried interval' });
+        groups.push({
+          id: 'queried-interval',
+          content: this.$t('localization.timeline.queryRange'),
+        });
         items.push({
           id: 'queried-interval',
           group: 'queried-interval',
-          content: 'query',
+          content: this.$t('localization.timeline.query'),
           start: this.queriedInterval[0].valueOf(),
           end: this.queriedInterval[1].valueOf(),
           style: 'background-color: #aaa; height: 10px',

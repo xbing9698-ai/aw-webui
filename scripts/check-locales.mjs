@@ -261,7 +261,9 @@ for (const code of LOCALES) {
   const missing = [...enKeys].filter(k => !keys.has(k));
   const extra = [...keys].filter(k => !enKeys.has(k));
 
-  const requiredMissing = missing.filter(k => !ENGLISH_FALLBACK_KEYS.has(k));
+  const requiredMissing = missing.filter(
+    k => code === 'zh-CN' || (!ENGLISH_FALLBACK_KEYS.has(k) && !k.startsWith('localization.'))
+  );
   if (requiredMissing.length) {
     failed = true;
     console.error(`\n[${code}] Missing keys (${requiredMissing.length}):`);
@@ -301,7 +303,10 @@ for (const code of LOCALES) {
       .forEach(({ key, en, got }) => console.error(`  - ${key}: en [${en}] vs [${got}]`));
   }
 
+  // Newly extracted UI text falls back to English in other locales until translated.
+  // Simplified Chinese must cover it completely.
   if (untranslated.length) {
+    if (code === 'zh-CN') failed = true;
     console.warn(`\n[${code}] Possibly untranslated (identical to en, ${untranslated.length}):`);
     const shown = verbose ? untranslated : untranslated.slice(0, 15);
     shown.forEach(k => console.warn(`  - ${k}: "${enFlat[k].slice(0, 60)}..."`));

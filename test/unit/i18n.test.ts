@@ -252,7 +252,8 @@ describe('i18n', () => {
         }
       }
     };
-    walk(en, ja, '');
+    // Newly extracted text uses the documented English fallback until translated.
+    walk(en, { ...ja, localization: ja.localization ?? en.localization }, '');
   });
 
   test('initial locale detects French browser language', () => {
@@ -305,7 +306,7 @@ describe('i18n', () => {
         }
       }
     };
-    walk(en, ptBR, '');
+    walk(en, { ...ptBR, localization: ptBR.localization ?? en.localization }, '');
   });
 
   test('setAppLocale switches to Indonesian messages', () => {

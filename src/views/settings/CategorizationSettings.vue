@@ -103,7 +103,7 @@ div
       div.mt-3(v-if="builderMounted")
         CategoryBuilder(embedded)
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :header-close-label="$t('localization.controls.close')"
     v-model="showCreateSetModal"
     :title="$t('settings.categorization.newSetModalTitle')"
     :ok-title="$t('settings.categorization.createSet')"
@@ -117,7 +117,7 @@ div
         :placeholder="$t('settings.categorization.newSetNamePlaceholder')"
       )
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :ok-title="$t('common.confirm')" :header-close-label="$t('localization.controls.close')"
     v-model="showImportModal"
     :title="$t('settings.categorization.importSetTitle')"
     hide-footer
@@ -202,7 +202,7 @@ export default {
   methods: {
     addClass: function () {
       const lastId = this.categoryStore.addClass({
-        name: ['New class'],
+        name: [this.$t('ui.categoryEditor.newClass')],
         rule: { type: 'regex', regex: 'FILL ME' },
       });
       this.editingId = lastId;
@@ -214,10 +214,12 @@ export default {
         console.error('Failed to save categories', e);
         const httpStatus = e && e.response && e.response.status;
         const detail = (e && e.message) || String(e);
-        const prefix = httpStatus
-          ? `Failed to save categories (HTTP ${httpStatus})`
-          : 'Failed to save categories';
-        alert(`${prefix}: ${detail}`);
+        alert(
+          this.$t('settings.categorization.saveError', {
+            status: httpStatus ? ` (HTTP ${httpStatus})` : '',
+            detail,
+          })
+        );
       }
     },
     resetClasses: async function () {
@@ -242,7 +244,7 @@ export default {
       elem.target.value = '';
 
       if (!shouldAttemptJsonImport(file)) {
-        alert('Please select a JSON category export, not an image or other file type.');
+        alert(this.$t('settings.categorization.invalidImportType'));
         return;
       }
 
@@ -251,7 +253,7 @@ export default {
         import_obj = parseCategoryImport(await file.text());
       } catch (e) {
         console.error('Failed to parse category import', e);
-        alert('Could not import categories: file is not a valid JSON category export.');
+        alert(this.$t('settings.categorization.invalidImportFile'));
         return;
       }
 
@@ -312,7 +314,7 @@ export default {
       }
       if (this.categoryStore.category_sets.find(s => s.id === name)) {
         event.preventDefault();
-        alert(`A set named "${name}" already exists.`);
+        alert(this.$t('settings.categorization.duplicateSet', { name }));
         return;
       }
       this.categoryStore.createSet(name);
@@ -322,12 +324,12 @@ export default {
       const id = this.categoryStore.active_set_ids[0];
       if (!id) return;
       const confirmed = await this.$bvModal.msgBoxConfirm(
-        `Delete category set "${id}"? This cannot be undone.`,
+        this.$t('settings.categorization.deleteSetConfirm', { id }),
         {
-          title: 'Delete Category Set',
-          okTitle: 'Delete',
+          title: this.$t('localization.categories.deleteTitle'),
+          okTitle: this.$t('common.delete'),
           okVariant: 'danger',
-          cancelTitle: 'Cancel',
+          cancelTitle: this.$t('common.cancel'),
           centered: true,
         }
       );
@@ -338,8 +340,13 @@ export default {
     onSetChange: async function (setId: string) {
       if (this.classes_unsaved_changes) {
         const confirmed = await this.$bvModal.msgBoxConfirm(
-          'You have unsaved changes. Switch sets anyway? (Changes will be discarded)',
-          { title: 'Unsaved Changes', okTitle: 'Switch', cancelTitle: 'Cancel', centered: true }
+          this.$t('settings.categorization.switchUnsavedConfirm'),
+          {
+            title: this.$t('localization.categories.unsavedTitle'),
+            okTitle: this.$t('localization.categories.switch'),
+            cancelTitle: this.$t('common.cancel'),
+            centered: true,
+          }
         );
         if (!confirmed) {
           this.activeSetId = this.categoryStore.active_set_ids[0] || 'default';

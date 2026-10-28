@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-	b-alert(variant="danger", v-for="error in errors", :key='error.time', :show='!error.dismissed', dismissible, @dismissed="error.dismissed = false")
+	b-alert(:dismiss-label="$t('localization.controls.close')" variant="danger", v-for="error in errors", :key='error.time', :show='!error.dismissed', dismissible, @dismissed="error.dismissed = false")
 		| {{ error.msg }}
 	slot
 </template>
@@ -30,7 +30,7 @@ export default {
       msg = err.response.data.message;
     } else if (err.name && err.message) {
       msg = `${err.name}: ${err.message}.
-				See dev console (F12) and/or server logs for more info.`;
+				${this.$t('localization.errors.details')}`;
     }
 
     this.errors.push({

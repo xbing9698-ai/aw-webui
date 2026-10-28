@@ -3,7 +3,7 @@ div
   b-alert(v-if="$isAndroid" show)
     | #[b {{ $t('home.note') }}] {{ $t('home.androidNote') }}
 
-  b-alert.supporter-nudge(v-if="supporterNudgeVisible" show variant="success" dismissible @dismissed="snoozeSupporterNudge")
+  b-alert.supporter-nudge(:dismiss-label="$t('localization.controls.close')" v-if="supporterNudgeVisible" show variant="success" dismissible @dismissed="snoozeSupporterNudge")
     span {{ $t('home.supporterNudge.message') }}
     b-button.ml-2(size="sm" variant="primary" :href="supporterNudgeHref" target="_blank" @click="onSupporterNudgeSupport") {{ $t('home.supporterNudge.support') }}
     b-button.ml-1(size="sm" variant="link" @click="snoozeSupporterNudge") {{ $t('home.supporterNudge.notNow') }}

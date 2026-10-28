@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  b-alert.my-2(v-if="isVisible", variant="info", show dismissible @dismissed="onDismiss")
+  b-alert.my-2(:dismiss-label="$t('localization.controls.close')" v-if="isVisible", variant="info", show dismissible @dismissed="onDismiss")
     p.mb-0
       | #[b {{ $t('uncategorized.title') }}]
       router-link.ml-1.uncategorized-hint__cog(

@@ -31,7 +31,7 @@ div
 
     div.col-md-6
       b-form-group(:label="$t('ui.aiSummary.model')" label-class="font-weight-bold")
-        b-form-input(v-model="model" placeholder="e.g. gpt-4o-mini" @blur="persistConfig")
+        b-form-input(v-model="model" :placeholder="$t('localization.ai.exampleModel')" @blur="persistConfig")
 
   div.mb-3
     b-form-group(:label="$t('ui.aiSummary.privacyTitle')" label-class="font-weight-bold")
@@ -52,7 +52,7 @@ div
 
   div.mb-4
     b-button(@click="generate" variant="primary" :disabled="loading || !apiKey || !selectedHost")
-      b-spinner.mr-2(v-if="loading" small)
+      b-spinner.mr-2(:label="$t('common.loading')" v-if="loading" small)
       | {{ loading ? $t('ui.aiSummary.generating') : $t('ui.aiSummary.generate') }}
     b-button.ml-2(
       v-if="aggregatedText"
@@ -60,7 +60,7 @@ div
       @click="dataVisible = !dataVisible"
     ) {{ dataVisible ? $t('ui.aiSummary.hideRaw') : $t('ui.aiSummary.showRaw') }}
 
-  b-alert(v-if="error" variant="danger" show dismissible @dismissed="error = ''")
+  b-alert(:dismiss-label="$t('localization.controls.close')" v-if="error" variant="danger" show dismissible @dismissed="error = ''")
     | {{ error }}
 
   div(v-if="dataVisible && aggregatedText")
@@ -94,10 +94,6 @@ import {
 } from '~/util/activityContext';
 import 'vue-awesome/icons/copy';
 
-const DEFAULT_PROMPT =
-  'Based on the following activity data, provide a concise summary of how I spent my time. ' +
-  'Highlight the main activities, identify focus areas, and suggest any observations about productivity patterns.';
-
 export default {
   name: 'AISummaryView',
   data() {
@@ -111,7 +107,7 @@ export default {
       provider: (saved.provider || 'openai') as LLMProvider,
       apiKey: saved.apiKey || '',
       model: saved.model || '',
-      userPrompt: DEFAULT_PROMPT,
+      userPrompt: this.$t('localization.ai.prompt'),
       excludeUncategorized: false,
       excludePrivateCategories: true,
 
@@ -160,6 +156,13 @@ export default {
     defaultModel(): string {
       if (this.provider === 'anthropic') return 'claude-haiku-4-5-20251001';
       return 'gpt-4o-mini';
+    },
+  },
+  watch: {
+    '$i18n.locale'(_next, previous) {
+      if (this.userPrompt === this.$i18n.t('localization.ai.prompt', previous)) {
+        this.userPrompt = this.$t('localization.ai.prompt');
+      }
     },
   },
   async mounted() {
@@ -234,7 +237,7 @@ export default {
       // watcher, so a naive find() could silently select an Android bucket.
       const windowBucketId = this.bucketsStore.bucketsWindow(this.selectedHost)[0];
       if (!windowBucketId) {
-        throw new Error(`No window-watcher bucket found for host: ${this.selectedHost}`);
+        throw new Error(String(this.$t('localization.ai.noWindow', { host: this.selectedHost })));
       }
       const afkBucket = buckets.find(
         b => b.type === 'afkstatus' && b.hostname === this.selectedHost

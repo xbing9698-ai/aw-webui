@@ -5,12 +5,12 @@
       | #[a(href="https://activitywatch.net/downloads/" target="_blank" class="alert-link") {{ $t('ui.release.download') }}],
       | {{ $t('ui.release.disablePrefix') }} #[a(href="javascript:void(0);" class="alert-link" @click="disableCheck") {{ $t('ui.release.disable') }}]
       | {{ $t('ui.release.disableSuffix') }}
-      button(type="button", class="close", @click="isVisible=false") &times;
+      button(type="button", class="close", :aria-label="$t('localization.controls.close')", @click="isVisible=false") &times;
 
     b-alert(v-if="isFollowUpVisible", variant="success", show)
       | {{ $t('ui.release.disabled') }}
       | #[router-link(to="/settings" class="alert-link" @click.native="isFollowUpVisible=false") {{ $t('ui.release.settingsPage') }}].
-      button(type="button", class="close", @click="isFollowUpVisible=false") &times;
+      button(type="button", class="close", :aria-label="$t('localization.controls.close')", @click="isFollowUpVisible=false") &times;
 </template>
 
 <script lang="ts">

@@ -9,9 +9,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 
-import { Datetime } from 'vue-datetime';
+import LocalizedDatetime from './components/LocalizedDatetime.vue';
 import 'vue-datetime/dist/vue-datetime.css';
-Vue.component('datetime', Datetime);
+Vue.component('datetime', LocalizedDatetime);
 
 // Load the Varela Round font
 import 'typeface-varela-round';

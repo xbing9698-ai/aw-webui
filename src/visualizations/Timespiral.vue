@@ -4,6 +4,7 @@ div
 </template>
 
 <script lang="ts">
+import { i18n } from '~/i18n';
 // This component renders an interactive "timespiral" where each turn of the "loop" is a 24h day.
 // The spiral can be zoomed in/out, to display different days.
 // Somewhat inspired by Apple's Time Machine UI.
@@ -105,6 +106,9 @@ export default {
     },
   },
   watch: {
+    '$i18n.locale'() {
+      this.renderChart();
+    },
     events() {
       this.renderChart();
     },
@@ -364,7 +368,7 @@ export default {
       drawClock(g, 21, 0, '', max_radius);
 
       const now = moment();
-      drawClock(g, now.hour(), now.minute(), 'Now', max_radius);
+      drawClock(g, now.hour(), now.minute(), String(i18n.t('localization.charts.now')), max_radius);
 
       // Draw date labels
       // We want to draw date-labels at the start of the spiral for each day (at 00:00)

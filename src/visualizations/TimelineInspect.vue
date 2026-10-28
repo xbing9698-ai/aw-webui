@@ -24,6 +24,9 @@ export default {
     eventfunc: { type: Function },
   },
   watch: {
+    '$i18n.locale'() {
+      this.update();
+    },
     chunks: function () {
       this.update();
     },

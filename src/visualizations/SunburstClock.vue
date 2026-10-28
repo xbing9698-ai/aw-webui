@@ -118,10 +118,20 @@ export default {
       starttime: moment(),
       endtime: moment(),
       centerMsg: '',
+      displayHierarchy: null,
     };
   },
 
   watch: {
+    '$i18n.locale'() {
+      if (!this.displayHierarchy) return;
+      this.centerMsg = this.$t(
+        this.displayHierarchy.children.length
+          ? 'ui.sunburstClock.hoverToInspect'
+          : 'visualizations.noData'
+      );
+      sunburst.update(this.$el, this.displayHierarchy, this.starttime);
+    },
     date: function (to) {
       this.starttime = moment(to);
       this.endtime = moment(this.starttime).add(1, 'days');
@@ -220,6 +230,7 @@ export default {
             };
             this.centerMsg = this.$t('visualizations.noData');
           }
+          this.displayHierarchy = hierarchy;
           sunburst.update(this.$el, hierarchy, this.starttime);
         });
       });

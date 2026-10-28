@@ -1,3 +1,4 @@
+import Vue from 'vue';
 /**
  * Regression tests for aw-webui#847 — timeline zoom should stay anchored
  * to the cursor position, not drift on each wheel event.
@@ -145,6 +146,7 @@ describe('timeline event editing (#984)', () => {
     };
     const saved = { ...original, data: { title: 'after' } };
     const vm = {
+      $t: Vue.prototype.$t,
       eventOverrides: { ['aw-watcher-window_test\0' + original.id]: saved },
     };
 
@@ -158,6 +160,7 @@ describe('timeline event editing (#984)', () => {
     const saved = { id: 7, data: { title: 'after' } };
     const emit = jest.fn();
     const vm = {
+      $t: Vue.prototype.$t,
       editingEventBucket: 'aw-watcher-window_test',
       editingEvent: null,
       eventOverrides: {},
@@ -220,7 +223,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     const { onHorizontalWheel } = VisTimeline.methods;
 
     test('returns early (no pan) when timeline is not yet initialised', () => {
-      const vm = { timeline: null };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: null,
+      };
       const event = makeWheelEvent({ deltaX: 100, deltaY: 0 });
 
       onHorizontalWheel.call(vm, event);
@@ -230,7 +236,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     });
 
     test('returns early when vertical component dominates (deltaY > deltaX)', () => {
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       const event = makeWheelEvent({ deltaX: 10, deltaY: 50 });
 
       onHorizontalWheel.call(vm, event);
@@ -240,7 +249,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     });
 
     test('returns early when both components are equal (deltaY == deltaX)', () => {
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       const event = makeWheelEvent({ deltaX: 30, deltaY: 30 });
 
       onHorizontalWheel.call(vm, event);
@@ -251,7 +263,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     test('pans the window when horizontal component dominates (deltaX > deltaY)', () => {
       const startMs = 1_000_000;
       const windowMs = 3_600_000;
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       const event = makeWheelEvent({ deltaX: 120, deltaY: 0 });
 
       onHorizontalWheel.call(vm, event);
@@ -266,7 +281,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     });
 
     test('calls preventDefault and stopImmediatePropagation on a handled event', () => {
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       const event = makeWheelEvent({ deltaX: 120, deltaY: 0 });
 
       onHorizontalWheel.call(vm, event);
@@ -278,7 +296,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     test('scales deltaX by 40 px/line in DOM_DELTA_LINE mode', () => {
       const startMs = 1_000_000;
       const windowMs = 3_600_000;
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       // deltaMode 1 = DOM_DELTA_LINE; 3 lines * 40 px/line = 120 px effective
       const event = makeWheelEvent({ deltaX: 3, deltaY: 0, deltaMode: 1 });
 
@@ -292,7 +313,10 @@ describe('VisTimeline zoom-anchor regression (#847)', () => {
     test('scales deltaX by 800 px/page in DOM_DELTA_PAGE mode', () => {
       const startMs = 1_000_000;
       const windowMs = 3_600_000;
-      const vm = { timeline: makeTimeline() };
+      const vm = {
+        $t: Vue.prototype.$t,
+        timeline: makeTimeline(),
+      };
       // deltaMode 2 = DOM_DELTA_PAGE; 1 page * 800 px/page = 800 px effective
       const event = makeWheelEvent({ deltaX: 1, deltaY: 0, deltaMode: 2 });
 
@@ -310,6 +334,7 @@ describe('timeline teardown', () => {
     const el = { removeEventListener: jest.fn() };
     const destroy = jest.fn();
     const vm = {
+      $t: Vue.prototype.$t,
       $el: { querySelector: () => el },
       timeline: { destroy },
       onHorizontalWheel: jest.fn(),
@@ -327,6 +352,7 @@ describe('timeline teardown', () => {
   test('does not create an instance after destruction while nextTick is pending', () => {
     let mount;
     const vm = {
+      $t: Vue.prototype.$t,
       $nextTick: callback => {
         mount = callback;
       },
@@ -340,7 +366,11 @@ describe('timeline teardown', () => {
 
 // Exercise the viewport/DataSet integration without constructing browser layout.
 test('panning preserves item IDs and editing uses the original bucket and event', async () => {
-  const vm = { ...VisTimeline.data(), ...VisTimeline.methods };
+  const vm = {
+    $t: Vue.prototype.$t,
+    ...VisTimeline.data(),
+    ...VisTimeline.methods,
+  };
   VisTimeline.created.call(vm);
   const event = {
     id: 42,
@@ -495,6 +525,7 @@ describe('derived category row (#700)', () => {
 
   function makeVm(categorizedEvents) {
     const vm = {
+      $t: Vue.prototype.$t,
       ...VisTimeline.data(),
       ...VisTimeline.methods,
       showRowLabels: true,
@@ -545,6 +576,7 @@ describe('VisTimeline rendering cost', () => {
 
   function makeVm(overrides = {}) {
     const vm = {
+      $t: Vue.prototype.$t,
       ...VisTimeline.data(),
       ...VisTimeline.methods,
       showRowLabels: false,
@@ -601,7 +633,11 @@ describe('VisTimeline rendering cost', () => {
 
 describe('panning within the rendered buffer', () => {
   function makeVm() {
-    const vm = { ...VisTimeline.data(), ...VisTimeline.methods };
+    const vm = {
+      $t: Vue.prototype.$t,
+      ...VisTimeline.data(),
+      ...VisTimeline.methods,
+    };
     VisTimeline.created.call(vm);
     vm.bucketsFromEither = [
       {
@@ -677,7 +713,11 @@ describe('panning within the rendered buffer', () => {
 });
 
 test('a saved edit replaces the rendered event and keeps the window in place', () => {
-  const vm = { ...VisTimeline.data(), ...VisTimeline.methods };
+  const vm = {
+    $t: Vue.prototype.$t,
+    ...VisTimeline.data(),
+    ...VisTimeline.methods,
+  };
   VisTimeline.created.call(vm);
   const bucketId = 'aw-watcher-window_test';
   const event = {

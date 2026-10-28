@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  b-alert.my-2(
+  b-alert.my-2(:dismiss-label="$t('localization.controls.close')"
     v-for="stale in staleWatchers"
     :key="stale.type"
     variant="warning"
@@ -8,10 +8,10 @@ div
     dismissible
     @dismissed="dismiss(stale.type)"
   )
-    | #[b Watcher stopped:]
-    |  {{ stale.name }} last reported {{ stale.minutesAgo }} minute{{ stale.minutesAgo === 1 ? '' : 's' }} ago.
-    |  Check the tray icon or
-    |  #[a(href="https://docs.activitywatch.net/en/latest/troubleshooting.html" target="_blank" rel="noopener") restart the watcher].
+    | #[b {{ $t('localization.watchers.stopped') }}]
+    |  {{ $t('localization.watchers.lastReported', { name: stale.name, minutes: stale.minutesAgo }) }}
+    |  {{ $t('localization.watchers.help') }}
+    |  #[a(href="https://docs.activitywatch.net/en/latest/troubleshooting.html" target="_blank" rel="noopener") {{ $t('localization.watchers.restart') }}].
 </template>
 
 <script lang="ts">

@@ -1,3 +1,4 @@
+import { i18n } from '~/i18n';
 import * as d3 from 'd3';
 import _ from 'lodash';
 import moment from 'moment';
@@ -130,7 +131,13 @@ function update(
     // applies the active filters (see #722), so bars can be slightly higher.
     rect
       .append('title')
-      .text(label + '\n' + seconds_to_duration(usage_time) + '\n(device active time)');
+      .text(
+        label +
+          '\n' +
+          seconds_to_duration(usage_time) +
+          '\n' +
+          String(i18n.t('localization.charts.deviceActive'))
+      );
   });
 }
 

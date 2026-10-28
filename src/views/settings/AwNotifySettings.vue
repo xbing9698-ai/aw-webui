@@ -8,10 +8,10 @@ div
       | {{ saving ? $t('settings.notifications.saving') : $t('common.save') }}
 
   b-alert(v-if="error" show variant="danger") {{ error }}
-  b-alert(v-if="success" show variant="success" dismissible @dismissed="success = false") {{ $t('settings.notifications.saved') }}
+  b-alert(:dismiss-label="$t('localization.controls.close')" v-if="success" show variant="success" dismissible @dismissed="success = false") {{ $t('settings.notifications.saved') }}
 
   div(v-if="loading")
-    b-spinner(small) {{ $t('common.loading') }}
+    b-spinner(:label="$t('common.loading')" small) {{ $t('common.loading') }}
 
   div(v-else)
     b-form-group.mb-3
@@ -64,6 +64,7 @@ div
 </template>
 
 <script lang="ts">
+import { i18n } from '~/i18n';
 import 'vue-awesome/icons/plus';
 import 'vue-awesome/icons/trash';
 
@@ -96,7 +97,7 @@ function dtoToRow(dto: AwNotifyAlert): AlertRow {
 function rowToDto(row: AlertRow): AwNotifyAlert {
   const thresholds = parseThresholds(row.thresholdStr);
   if (!thresholds) {
-    throw new Error('Thresholds must be comma-separated positive whole minutes.');
+    throw new Error(String(i18n.t('settings.notifications.thresholdsInvalid')));
   }
   return {
     label: row.label.trim() || null,
@@ -117,11 +118,15 @@ export default {
       saving: false,
       error: '',
       success: false,
-      goalOptions: [
+    };
+  },
+  computed: {
+    goalOptions() {
+      return [
         { text: this.$t('settings.notifications.goalWarning'), value: false },
         { text: this.$t('settings.notifications.goalReached'), value: true },
-      ],
-    };
+      ];
+    },
   },
   async mounted() {
     await this.load();
@@ -141,7 +146,7 @@ export default {
         }
         const config = parseAwNotifyConfig(resp.data);
         if (!config) {
-          throw new Error('The saved aw-notify setting has an unsupported format.');
+          throw new Error(String(this.$t('settings.notifications.unsupportedFormat')));
         }
         this.config = config;
         this.enabled = config.enabled ?? false;
@@ -169,7 +174,7 @@ export default {
       let alertDtos: AwNotifyAlert[];
       if (this.enabled) {
         if (this.alerts.some(row => parseThresholds(row.thresholdStr) === null)) {
-          this.error = 'Thresholds must be comma-separated positive whole minutes.';
+          this.error = this.$t('settings.notifications.thresholdsInvalid');
           return;
         }
         alertDtos = this.alerts.map(rowToDto);
@@ -194,13 +199,13 @@ export default {
         this.config = payload;
         this.success = true;
       } catch (e: any) {
-        this.error = `Failed to save settings: ${e?.message ?? e}`;
+        this.error = this.$t('settings.notifications.saveFailed', { error: e?.message ?? e });
       } finally {
         this.saving = false;
       }
     },
     thresholdError(value: string): string {
-      return parseThresholds(value) === null ? 'Use comma-separated positive whole minutes.' : '';
+      return parseThresholds(value) === null ? this.$t('localization.notify.threshold') : '';
     },
     thresholdState(value: string): boolean | null {
       return parseThresholds(value) === null ? false : null;

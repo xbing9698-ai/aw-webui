@@ -1,3 +1,4 @@
+import { i18n } from '~/i18n';
 /**
  * LLM provider plumbing for the AI activity summary page.
  *
@@ -35,7 +36,7 @@ export function saveLLMConfig(config: Partial<LLMConfig>): void {
 }
 
 export async function callLLM(config: LLMConfig, userMessage: string): Promise<string> {
-  if (!config.apiKey) throw new Error('API key is required');
+  if (!config.apiKey) throw new Error(String(i18n.t('ui.aiSummary.apiKeyRequired')));
 
   if (config.provider === 'openai') {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -52,7 +53,11 @@ export async function callLLM(config: LLMConfig, userMessage: string): Promise<s
     });
     if (!res.ok) {
       const text = await res.text();
-      throw new Error(`LLM request failed (${res.status}): ${text.slice(0, 200)}`);
+      throw new Error(
+        String(
+          i18n.t('localization.ai.requestError', { status: res.status, error: text.slice(0, 200) })
+        )
+      );
     }
     const data = await res.json();
     return data.choices?.[0]?.message?.content ?? '';
@@ -74,11 +79,15 @@ export async function callLLM(config: LLMConfig, userMessage: string): Promise<s
     });
     if (!res.ok) {
       const text = await res.text();
-      throw new Error(`LLM request failed (${res.status}): ${text.slice(0, 200)}`);
+      throw new Error(
+        String(
+          i18n.t('localization.ai.requestError', { status: res.status, error: text.slice(0, 200) })
+        )
+      );
     }
     const data = await res.json();
     return data.content?.[0]?.text ?? '';
   }
 
-  throw new Error(`Unknown provider: ${config.provider}`);
+  throw new Error(String(i18n.t('localization.ai.providerError', { provider: config.provider })));
 }

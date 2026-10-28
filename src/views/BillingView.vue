@@ -33,7 +33,7 @@ div
       |  {{ $t('ui.billing.exportCsv') }}
 
   div(v-if="loading")
-    b-spinner.mr-2
+    b-spinner.mr-2(:label="$t('common.loading')")
     | {{ $t('common.loading') }}
 
   div(v-if="errorMessage")
@@ -57,7 +57,7 @@ div
         tr(v-for="row in categoryRows" :key="row.key")
           td
             span.badge.mr-1(:style="{ background: '#6c757d', color: 'white' }") {{ row.depth > 0 ? '↳ ' : '' }}
-            | {{ row.label }}
+            | {{ categoryLabel(row) }}
           td.text-right {{ formatHours(row.duration) }}
           td.text-right
             b-form-input(
@@ -79,6 +79,7 @@ div
 </template>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import moment from 'moment';
 import { getClient } from '~/util/awclient';
 import { useCategoryStore } from '~/stores/categories';
@@ -181,6 +182,11 @@ export default {
     }
   },
   methods: {
+    categoryLabel(row) {
+      return row.category === 'Uncategorized'
+        ? categoryDisplayName(['Uncategorized'], this.$t.bind(this))
+        : row.label;
+    },
     getTimeperiod(): string {
       const offset = this.settingsStore.startOfDay;
       let startDate: moment.Moment;

@@ -6,7 +6,7 @@ div
     b-button.mt-1.mr-2(v-if="fields && (limit_ < fields.length)", size="sm", variant="outline-secondary", @click="limit_ += 5")
       icon(name="angle-double-down")
       | {{ $t('ui.summary.showMore') }}
-    b-button.mt-1(v-if="limit_ != limit" size="sm", variant="outline-secondary", @click="limit_ = limit")
+    b-button.mt-1(v-if="limit_ != limit" size="sm", variant="outline-secondary", @click="limit_ = limit" :aria-label="$t('localization.controls.collapse')")
       icon(name="angle-double-up")
 </template>
 
@@ -57,6 +57,15 @@ export default {
     },
   },
   watch: {
+    '$i18n.locale'() {
+      this.update();
+    },
+    namefunc() {
+      this.update();
+    },
+    hoverfunc() {
+      this.update();
+    },
     fields: function () {
       this.update();
     },

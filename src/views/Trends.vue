@@ -34,11 +34,11 @@ div
   div(v-if="!host")
     b-alert(show variant="info")
       | {{ $t('ui.trends.noHost') }}
-      | #[a(href="https://docs.activitywatch.net/en/latest/watchers.html") aw-watcher-window and aw-watcher-afk]
+      | #[a(href="https://docs.activitywatch.net/en/latest/watchers.html") aw-watcher-window {{ $t('settings.privacyFilters.and') }} aw-watcher-afk]
       | {{ $t('extraViews.trends.toUse') }}
 
   div(v-else-if="loading")
-    b-spinner.mr-2(small)
+    b-spinner.mr-2(:label="$t('common.loading')" small)
     span.text-muted {{ $t('ui.trends.computing', { days: periodDays }) }}
 
   div(v-else)
@@ -88,7 +88,7 @@ div
       :sort-desc="true"
     )
       template(#cell(category)="row")
-        | {{ row.item.category.join(' > ') || $t('common.uncategorized') }}
+        | {{ categoryName(row.item.category) }}
       template(#cell(current)="row")
         | {{ row.item.current | friendlyduration }}
       template(#cell(previous)="row")
@@ -105,6 +105,7 @@ div
 </style>
 
 <script lang="ts">
+import { categoryDisplayName } from '~/util/displayNames';
 import moment from 'moment';
 import {
   get_today_with_offset,
@@ -356,6 +357,9 @@ export default {
   },
 
   methods: {
+    categoryName(path) {
+      return categoryDisplayName(path, this.$t.bind(this)) || this.$t('common.uncategorized');
+    },
     setPeriod(days: number) {
       this.periodDays = days;
       this.refresh();

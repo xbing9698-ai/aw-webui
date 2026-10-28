@@ -10,7 +10,7 @@ div
   b-alert(v-if="error" show variant="danger")
     | {{error}}
 
-  aw-select-categories-or-pattern(v-model="filterCategories")
+  aw-select-categories-or-pattern(v-model="filterCategories" @display-search-label="syntheticSearch = $event")
     template(v-slot:input-group-append)
       b-button(type="button", @click="generate()" variant="success" :disabled="!has_pattern")
         icon(name="search")
@@ -112,6 +112,7 @@ export default {
       show_options: false,
       queryOptions: {},
       filterCategories: [],
+      syntheticSearch: false,
     };
   },
   computed: {
@@ -121,7 +122,8 @@ export default {
     datasets: function () {
       return buildBarchartDataset(
         this.activityStore.category.by_period,
-        this.categoryStore.classes
+        this.categoryStore.classes,
+        this.syntheticSearch
       );
     },
   },

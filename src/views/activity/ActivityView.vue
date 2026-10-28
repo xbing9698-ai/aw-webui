@@ -40,7 +40,7 @@ div(v-else-if="view")
       icon(name="edit")
       span {{ $t('activityView.editView') }}
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :header-close-label="$t('localization.controls.close')"
     v-if="view"
     :id="'remove-view-modal-' + view.id"
     :title="$t('activityView.removeViewTitle')"
@@ -50,12 +50,12 @@ div(v-else-if="view")
     cancel-variant="outline-secondary"
     @ok="remove"
   )
-    | {{ $t('activityView.removeViewConfirm') }} "{{ view.name || view.id }}"?
+    | {{ $t('activityView.removeViewConfirm') }} "{{ viewDisplayName(view) }}"?
     br
     br
     | {{ $t('activityView.removeViewHint') }} #[b {{ $t('activityView.restoreDefaults') }}] {{ $t('activityView.removeViewRestoreHint') }}
 
-  b-modal(
+  b-modal(:cancel-title="$t('common.cancel')" :header-close-label="$t('localization.controls.close')"
     v-model="showCustomVisModal"
     :title="$t('ui.activity.addCustomVisualization')"
     :ok-title="$t('ui.activity.add')"
@@ -82,6 +82,7 @@ import 'vue-awesome/icons/undo';
 import draggable from 'vuedraggable';
 
 import { useViewsStore } from '~/stores/views';
+import { viewDisplayName } from '~/util/displayNames';
 
 export default {
   name: 'ActivityView',
@@ -127,6 +128,9 @@ export default {
     },
   },
   methods: {
+    viewDisplayName(view) {
+      return viewDisplayName(view, this.$t.bind(this));
+    },
     save() {
       useViewsStore().save();
     },
